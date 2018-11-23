@@ -2,11 +2,12 @@ package main
 
 import (
 	"context"
-	"time"
 	"fmt"
-	ct "github.com/daviddengcn/go-colortext"
-	"github.com/Azure/go-autorest/autorest/azure/auth"
+	"time"
+
 	"github.com/Azure/azure-sdk-for-go/services/preview/monitor/mgmt/2018-03-01/insights"
+	"github.com/Azure/go-autorest/autorest/azure/auth"
+	ct "github.com/daviddengcn/go-colortext"
 )
 
 //  reference: https://github.com/Azure/azure-sdk-for-go/blob/master/services/monitor/mgmt/2017-09-01/insights/activitylogs.go
@@ -21,7 +22,7 @@ func main() {
 	// Create the OData filter for a time interval and the Azure.Health Provider.
 	endTime := time.Now().UTC()
 	startTime := endTime.Add(time.Duration(-24) * time.Hour)
-	filter:=fmt.Sprintf(
+	filter := fmt.Sprintf(
 		"eventTimestamp ge '%s' and eventTimestamp le '%s' and resourceProvider eq '%s'",
 		startTime.Format(time.RFC3339),
 		endTime.Format(time.RFC3339),
@@ -32,8 +33,8 @@ func main() {
 
 	if err == nil {
 		for result.NotDone() {
-			for _,eventData := range result.Values(){
-				if *eventData.Status.Value != "Resolved" && (eventData.Level==insights.Critical || eventData.Level==insights.Error) {
+			for _, eventData := range result.Values() {
+				if *eventData.Status.Value != "Resolved" && (eventData.Level == insights.Critical || eventData.Level == insights.Error) {
 					ct.Foreground(ct.Red, false)
 				} else if *eventData.Status.Value == "Resolved" {
 					ct.Foreground(ct.Green, false)
@@ -42,8 +43,8 @@ func main() {
 				}
 
 				fmt.Println(fmt.Sprintf(
-					"%s - %s - %s", 
-					eventData.EventTimestamp.Local(), 
+					"%s - %s - %s",
+					eventData.EventTimestamp.Local(),
 					*eventData.ResourceProviderName.Value,
 					*eventData.OperationName.Value))
 				fmt.Println(fmt.Sprintf("Status:\t %s", *eventData.Status.Value))
@@ -55,10 +56,10 @@ func main() {
 
 			// Get more events if available.
 			result.NextWithContext(context.Background())
-		}	
+		}
 	}
 
 	ct.Foreground(ct.Green, false)
-	fmt.Println("No more events...");
-    ct.Foreground(ct.White, false)
+	fmt.Println("No more events...")
+	ct.Foreground(ct.White, false)
 }
