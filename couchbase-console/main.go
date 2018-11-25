@@ -32,13 +32,15 @@ func main() {
 	// Insert the beer document
 	bucket.Upsert("u:polarice", beer, 0)
 
-	fmt.Printf("Inserted document '%s'", beer.ID)
+	fmt.Printf("Inserted document '%s' \r\n", beer.ID)
 
 	// Query the beer sample bucket and find the beer we just added.
-	query := gocb.NewN1qlQuery("SELECT name FROM beer-sample WHERE brewery_id =\"$1\"")
-	rows, _ := bucket.ExecuteN1qlQuery(query, []interface{}{"Polar"})
-	var row interface{}
-	for rows.Next(&row) {
-		fmt.Printf("Row: %v", row)
+	query := gocb.NewN1qlQuery("SELECT name FROM `beer-sample` WHERE brewery_id=$1")
+	rows, err := bucket.ExecuteN1qlQuery(query, []interface{}{"Polar"})
+	if err == nil {
+		var row interface{}
+		for rows.Next(&row) {
+			fmt.Printf("Row: %v", row)
+		}
 	}
 }
