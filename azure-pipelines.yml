@@ -19,6 +19,6 @@ steps:
     echo '##vso[task.prependpath]$(GOROOT)/bin'
   displayName: 'Set up the Go workspace'
 
-- script: find . -type f \( -iname "*.go" \) | xargs -n1 -I {} sh -c 'ff="{}"; f=$(basename {}); f=./bin/${f%.*}; go build -o $f $ff'
+- script: go build ../...
   workingDirectory: '$(modulePath)'
   displayName: 'Building all go projects'
