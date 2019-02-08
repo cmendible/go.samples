@@ -1,4 +1,4 @@
-module pod-spy
+module kube-sherlock
 
 require (
 	contrib.go.opencensus.io/exporter/ocagent v0.4.3 // indirect
