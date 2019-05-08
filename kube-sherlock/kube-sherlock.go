@@ -1,9 +1,9 @@
 package main
 
 import (
-	"log"
 	"flag"
 	"fmt"
+	"log"
 	"os"
 	"path/filepath"
 
@@ -24,7 +24,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	
+
 	for _, namespace := range getNamespaces() {
 		pods, err := clientset.CoreV1().Pods(namespace).List(metav1.ListOptions{})
 		if err != nil {
@@ -32,10 +32,10 @@ func main() {
 		}
 
 		for _, pod := range pods.Items {
-			for _, label := range getRequiredLabels(){
+			for _, label := range getRequiredLabels() {
 				_, present := pod.Labels[label]
 				if !present {
-					fmt.Printf("Pod %v does not have the %v label\n", pod.Name, label)	
+					fmt.Printf("Pod %v does not have the %v label\n", pod.Name, label)
 				}
 			}
 		}
@@ -50,11 +50,11 @@ func homeDir() string {
 }
 
 func getNamespaces() []string {
-	return []string {""}
+	return []string{""}
 }
 
 func getRequiredLabels() []string {
-	return []string {"app"}
+	return []string{"app"}
 }
 
 func getConfig() (config *rest.Config) {
@@ -70,12 +70,12 @@ func getConfig() (config *rest.Config) {
 	} else {
 		kubeconfig = ""
 	}
-	
+
 	// use the current context in kubeconfig
 	config, err := clientcmd.BuildConfigFromFlags("", kubeconfig)
 	if err != nil {
 		log.Fatal(err)
 	}
-	
+
 	return config
 }
